@@ -7,20 +7,7 @@ const Personal = function(personal) {
     this.pid = personal.pid;
     this.kota = personal.kota;
     this.agama = personal.agama;
-};
 
-Personal.getAll = result => {
-    const status ='T';
-    const agama = 'Kristen';
-    sql.query(`SELECT nama,pid,kerja,agama from totkar WHERE kerja=? AND agama=?`,[status,agama], (err, res)=> {
-        if(err) {
-            console.log("error:", err);
-            result (null, err);
-            return;
-        }
-        console.log("Personal:",res);
-        result(null, res);
-    });
 };
 
 Personal.PersonalbyPid = (pid, result) => {
@@ -37,6 +24,39 @@ Personal.PersonalbyPid = (pid, result) => {
     }  
     result({ kind: "not_found"}, null);
 });
+};
+
+Personal.tc = (pid,bulan,tahun,result) => {         
+        sql.query(`SELECT * from attendance WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=?`,pid,bulan,tahun, (err, res)=> {
+          
+            if(err) {
+            console.log("error:", err);
+            result (null, err);
+            return;
+        }
+        if(res.length) {
+            console.log("found data:",res);
+            result(null, res);
+             return;
+        }  
+        result({ kind: "not_found"}, null);
+    });
+   
+};
+
+
+Personal.getAll = result => {
+    const status ='T';
+    const agama = 'Kristen';
+    sql.query(`SELECT nama,pid,kerja,agama from totkar WHERE kerja=? AND agama=?`,[status,agama], (err, res)=> {
+        if(err) {
+            console.log("error:", err);
+            result (null, err);
+            return;
+        }
+        console.log("Personal:",res);
+        result(null, res);
+    });
 };
 
 Personal.logos = (pid,result) => {
@@ -74,24 +94,7 @@ Personal.logos = (pid,result) => {
       });
      
   };
-Personal.login = (pid,result) => {
-  // const status ='T';   
-   //const nopid = pid;
-    sql.query(`SELECT nama,pid,namabag from totkar WHERE pid=?`,pid, (err, res)=> {
-        if(err) {
-            console.log("error:", err);
-            result (null, err);
-            return;
-        }
-        if(res.length) {
-            console.log("found data:",res[0]);
-            result(null, res[0]);
-             return;
-        }  
-        result({ kind: "not_found"}, null);
-    });
-   
-};
+
 Personal.findbyPid = (pid, result) => {
         sql.query(`SELECT * FROM totkar WHERE pid = ?`,pid,(err,res)=> {
         if(err) {

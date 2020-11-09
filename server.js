@@ -15,6 +15,7 @@ app.get("/", (req,res)=> {
 require("./app/routes/personal.js")(app);
 
 
+
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}.`);
 });

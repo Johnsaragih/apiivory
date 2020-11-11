@@ -11,7 +11,10 @@ const Personal = function(personal) {
 };
 
 Personal.PersonalbyPid = (pid, result) => {
-    sql.query(`SELECT nama,pid,namabag FROM totkar WHERE pid = ?`,pid,(err,res)=> {
+    var qwr = `SELECT nama,pid,namabag \
+               FROM totkar WHERE pid = ?`;
+
+    sql.query(qwr,pid,(err,res)=> {
     if(err) {
         console.log("error:",err);
         result(err,null);
@@ -26,13 +29,13 @@ Personal.PersonalbyPid = (pid, result) => {
 });
 };
 
-Personal.tc = (pid,bulan,tahun,result) => {         
-        sql.query(`SELECT * from attendance WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=?`,pid,bulan,tahun, (err, res)=> {
-          
-            if(err) {
+Personal.tcabsen = (pid,bulan,tahun,result) => {         
+        sql.query('INSERT into timecardapk(kodetc,pid,tgl,absenstatus) SELECT kodeaid,pid,tgl,jenis FROM absen WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=? ON DUPLICATE KEY UPDATE kodetc=VALUES(kodetc),pid=VALUES(pid),tgl=VALUES(tgl),absenstatus=VALUES(absenstatus)',pid,bulan,tahun, (err, res)=> {
+          if(err) {
             console.log("error:", err);
             result (null, err);
             return;
+           
         }
         if(res.length) {
             console.log("found data:",res);
@@ -43,6 +46,66 @@ Personal.tc = (pid,bulan,tahun,result) => {
     });
    
 };
+
+Personal.tc = (pid,bulan,tahun,result) => {         
+    sql.query(`SELECT tgl,checkin,checkout,overtime from timecardapk WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=?`,pid,bulan,tahun, (err, res)=> {
+      if(err) {
+        console.log("error:", err);
+        result (null, err);
+        return;
+    }
+    if(res.length) {
+
+        
+        console.log("found data:",res);
+        result(null, res);
+         return;
+    }  
+    result({ kind: "not_found"}, null);
+});
+
+};
+
+Personal.tcweb = (pid,bulan,tahun,result) => {      
+    var qw = 'insert into timecardapk(kodetc,pid,tgl,absenstatus,checkin,checkout,overtime) \
+              select a.kodeat,a.pid,a.tgl,"HADIR",a.checkin,a.checkout,a.overtime \
+              FROM attendance a WHERE a.pid=? AND MONTH(a.tgl)=? AND YEAR(a.tgl)=? ON DUPLICATE KEY UPDATE \
+              kodetc=VALUES(kodetc),pid=VALUES(pid),tgl=VALUES(tgl),absenstatus=VALUES(absenstatus),checkin=VALUES(checkin), \
+              checkout=VALUES(checkout),overtime=VALUES(overtime)';
+    sql.query(qw,pid,bulan,tahun, (err, res)=> {
+      if(err) {
+        console.log("error:", err);
+        result (null, err);
+        return;
+       
+    }
+    if(res.length) {
+        console.log("found data:",res);
+        result(null, res);
+         return;
+    }  
+    result({ kind: "not_found"}, null);
+});
+
+};
+Personal.getabsen = (pid,tahun,result) => {         
+    sql.query(`SELECT tgl, jenis from absen WHERE pid=? AND YEAR(tgl)=?`,pid,tahun, (err, res)=> {
+      
+        if(err) {
+        console.log("error:", err);
+        result (null, err);
+        return;
+    }
+    if(res.length) {
+        console.log("found data:",res);
+        result(null, res);
+         return;
+    }  
+    result({ kind: "not_found"}, null);
+});
+
+};
+
 
 
 Personal.getAll = result => {

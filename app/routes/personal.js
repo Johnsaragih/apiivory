@@ -4,6 +4,9 @@ module.exports = app => {
 
     app.get("/Personal/:pid",personal.PersonalPid);    
     app.get("/Timecard/:pid/:bulan/:tahun", personal.timecard);
+    app.get("/Timecardweb/:pid/:bulan/:tahun", personal.timecardweb);
+    app.get("/Timecardabsen/:pid/:bulan/:tahun", personal.tcinputabsen);
+    app.get("/Absen/:pid/:tahun",personal.absen);
     // app.delete("/person/:pid", personal.delete);
     // app.put("/person/:pid",personal.update);    
     // app.post("/person", personal.create);

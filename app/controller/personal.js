@@ -35,6 +35,61 @@ exports.timecard = (req,res) => {
           }
       });
   }
+
+  exports.timecardweb = (req,res) => {      
+    Personal.tcweb([req.params.pid,req.params.bulan,req.params.tahun],(err,data)=> {
+        if(err) {
+            if(err.kind=="not_found") {
+                res.status(404).send({
+                   message: `No Data Found` 
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retieve data.." 
+                });
+
+            } 
+        } else {
+            res.send(data);
+        }
+    });
+}
+exports.tcinputabsen = (req,res) => {      
+    Personal.tcabsen([req.params.pid,req.params.bulan,req.params.tahun],(err,data)=> {
+        if(err) {
+            if(err.kind=="not_found") {
+                res.status(404).send({
+                   message: `No Data Found` 
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retieve data.." 
+                });
+
+            } 
+        } else {
+            res.send(data);
+        }
+    });
+}
+  exports.absen = (req,res) => {      
+    Personal.getabsen([req.params.pid,req.params.tahun],(err,data)=> {
+        if(err) {
+            if(err.kind=="not_found") {
+                res.status(404).send({
+                   message: `No Data Found..` 
+                });
+            } else {
+                res.status(500).send({
+                    message: "Error retieve data.." 
+                });
+
+            } 
+        } else {
+            res.send(data);
+        }
+    });
+}
 exports.logon = (req,res) => {
     Personal.login(req.params.pid,(err,data)=> {
         if(err) {

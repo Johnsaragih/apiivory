@@ -1,7 +1,6 @@
 module.exports = app => {
 
     const personal = require("../controller/personal.js");
-
     app.get("/Personal/:pid",personal.PersonalPid);    
     app.get("/Timecard/:pid/:bulan/:tahun", personal.timecard);
     app.get("/Timecardweb/:pid/:bulan/:tahun", personal.timecardweb);

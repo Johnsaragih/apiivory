@@ -48,7 +48,7 @@ Personal.tcabsen = (pid,bulan,tahun,result) => {
 };
 
 Personal.tc = (pid,bulan,tahun,result) => {         
-    sql.query(`SELECT tgl,checkin,checkout,overtime from timecardapk WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=?`,pid,bulan,tahun, (err, res)=> {
+    sql.query(`SELECT tgl,absenstatus,checkin,checkout,overtime from timecardapk WHERE pid=? AND MONTH(tgl)=? AND YEAR(tgl)=?`,pid,bulan,tahun, (err, res)=> {
       if(err) {
         console.log("error:", err);
         result (null, err);
